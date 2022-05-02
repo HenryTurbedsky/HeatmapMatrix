@@ -9,9 +9,12 @@ TODO: Search Short Cuts
   Block hot points:
   (this would be a simialr optimization that you see with pyshicse and collisions).
 
+  Quarter Arrays? if its all mirrored why not use just quarters?
+
 TODO: peeks
   Save the Hottest points. this is likly to be a very common want.
   Save cold points also?
+  extremum
 
 TODO: fallOff patters?
   This would be for a all int version vs a float.
@@ -77,6 +80,8 @@ TODO: Ideas
     This could be a object type?
     Finding a way to optimize this so the map doesnt need to be regenarated for raeal time apps.
     Not first prioraty => also all meta data optimizations would help with this.
+
+  Bitboard layers for value. example 10 bitboards since value will max 10
 */
 
 class Heatmap {
@@ -116,37 +121,91 @@ class Heatmap {
     this.heatmap[y][x] += val;
   }
 
+  // addHeat(heat,x,y){
+  //   var lowestHeat = heat % this.fallOff;
+  //   if(lowestHeat == 0) lowestHeat = this.fallOff;
+  //
+  //   var newArray = [];
+  //
+  //   var fallOffSteps = Math.ceil(heat/this.fallOff);
+  //
+  //   for (var row = 0; row < fallOffSteps; row++) {
+  //     newArray.push([]);
+  //
+  //     for (var i = 0; i < (fallOffSteps-(row+1)); i++) newArray[row].push(0);
+  //
+  //     for (var i = 0; i < (row+1); i++) {
+  //       newArray[row].push( lowestHeat + (this.fallOff*i) );
+  //     }
+  //
+  //     for (var i = 1+(fallOffSteps-(row+1)); i < fallOffSteps; i++) {
+  //       newArray[row].push(heat - (this.fallOff*i));
+  //     }
+  //
+  //     for (var i = 0; i < (fallOffSteps-(row+1)); i++) newArray[row].push(0);
+  //   }
+  //
+  //   for (var row = 1; row < fallOffSteps; row++){
+  //     newArray.push([]);
+  //     newArray[newArray.length-1].push(...newArray[fallOffSteps-(row+1)]);
+  //   }
+  //
+  //   newArray.forEach((row, i) => {
+  //     console.log(row.toString());
+  //   });
+  // }
+
+
+
   addHeat(heat,x,y){
+
     var lowestHeat = heat % this.fallOff;
     if(lowestHeat == 0) lowestHeat = this.fallOff;
 
-    var newArray = [];
-
     var fallOffSteps = Math.ceil(heat/this.fallOff);
+    var length = 2*fallOffSteps - 1;
+    var center = fallOffSteps-1;
 
+    var newArray = [];
+    for (var i = 0; i < length; i++) {
+      newArray.push(new Array(length).fill(0));
+    }
+
+    var heatVal;
     for (var row = 0; row < fallOffSteps; row++) {
-      newArray.push([]);
-
-      for (var i = 0; i < (fallOffSteps-(row+1)); i++) newArray[row].push(0);
-
-      for (var i = 0; i < (row+1); i++) {
-        newArray[row].push( lowestHeat + (this.fallOff*i) );
+      for (var point = 0; point < row+1; point++) {
+        heatVal = lowestHeat + (this.fallOff*(row-point));
+        newArray[row][center - point] = heatVal;
+        if(point != 0) newArray[row][center + point] = heatVal;
       }
-
-      for (var i = 1+(fallOffSteps-(row+1)); i < fallOffSteps; i++) {
-        newArray[row].push(heat - (this.fallOff*i));
-      }
-
-      for (var i = 0; i < (fallOffSteps-(row+1)); i++) newArray[row].push(0);
+      if(row != fallOffSteps) newArray[(length-1)-row] = newArray[row]; //This copys address.
     }
 
-    for (var row = 0; row < fallOffSteps-1; row++){
-      newArray.push([]);
-      newArray[newArray.length-1].push(...newArray[fallOffSteps-(row+1)]);
-    }
+    newArray.forEach((row, i) => {
+      console.log(row.toString());
+    });
 
-    console.log(newArray);
+    // console.log(centerArray);
+
+    // for (var i = 1; i < fallOffSteps; i++) {
+    //   centerArray.push(centerArray[fallOffSteps-(i+1)]);
+    // }
+
+    // var heatVal;
+    // for (var left = 0, right = endLength-1; left < fallOffSteps; left++, right--) {
+    //   heatVal = lowestHeat + (this.fallOff*left);
+    //   centerArray[left] = heatVal;
+    //   centerArray[right] = heatVal;
+    // }
+
+    // for (var top = 0, bottom = endLength-1; top < fallOffSteps; top++, bottom--) {
+    //   newArray.push(new Array(endLength).fill(0))
+    //
+    // }
   }
+
+
+
 
   // Add Heat ?(pattern, heat, fallOff)
   // Able to give a negitve heat?
@@ -154,7 +213,7 @@ class Heatmap {
 
   // Find peeks
 
-
+  // applyHeat()
 
 
   display(){

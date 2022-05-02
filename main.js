@@ -4,4 +4,4 @@ const Heatmap = require('./HeatmapMatrix');
 var hm = new Heatmap(10,10,2);
 
 
-hm.addHeat(10,5,5);
+hm.addHeat(5,5,5);
