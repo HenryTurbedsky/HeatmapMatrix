@@ -97,6 +97,8 @@ class Heatmap {
   static fallOff; // Ratio? Faster fallOff
   static peeks; //Hottest points on the heat map;
 
+  static debug;
+
   constructor(width,height,fallOff){
     this.width = width;
     this.height = height;
@@ -108,6 +110,8 @@ class Heatmap {
     for (var i = 0; i < height; i++) {
       this.heatmap[i] = new Array(width).fill(0);
     }
+
+    this.debug = false;
   }
 
 
@@ -134,11 +138,44 @@ class Heatmap {
       }
     }
 
-    quarterArray.forEach((row, i) => {
-      console.log(row.toString());
-    });
+    if (this.debug) {
+      quarterArray.forEach((row, i) => {
+        console.log(row.toString());
+      });
+    }
+
+    return quarterArray;
   }
 
+
+  quarterToFull(quarterArray){
+    var radius = quarterArray[0].length;
+    var size = radius*2 - 1;
+
+    var fullArray = [];
+    for (var i = 0; i < size; i++) {
+      fullArray.push(new Array(size).fill(0));
+    }
+
+    for (var row = 0; row < radius; row++) {
+      for (var point = 0; point < row+1; point++) {
+        fullArray[row][(radius-1) + point] = quarterArray[(radius-1) - row][point];
+        if(point) fullArray[row][(radius-1) - point] = quarterArray[(radius-1) - row][point];
+        if(row != radius){
+          fullArray[(size-1)-row][(radius-1) + point] = quarterArray[(radius-1) - row][point];
+          if(point) fullArray[(size-1)-row][(radius-1) - point] = quarterArray[(radius-1) - row][point];
+        }
+      }
+    }
+
+    if (this.debug) {
+      fullArray.forEach((row, i) => {
+        console.log(row.toString());
+      });
+    }
+
+    return fullArray;
+  }
 
 
 
