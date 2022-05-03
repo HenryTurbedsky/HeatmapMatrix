@@ -120,14 +120,19 @@ class Heatmap {
     this.heatmap[y][x] = val;
   }
 
-  //Sets a single point without any heat fallOff but does add to the current heat.
-  setHeat(heat,x,y){
+  //Adds to a single point without any heat fallOff
+  addHeat(heat,x,y){
     this.heatmap[y][x] += val;
   }
 
+  // Sets the heat
+  apply(heat,x,y){
+    if(this.heatmap[y][x]<heat) this.heatmap[y][x] = heat;
+  }
 
 
-  addHeat(heat,x,y){
+  // Takes in a value and crates a quarterArray for the rollOff.
+  quarterArray(heat){
     var quarterArray = [];
     var fallOffSteps = Math.ceil(heat/this.fallOff);
 
@@ -138,16 +143,12 @@ class Heatmap {
       }
     }
 
-    if (this.debug) {
-      quarterArray.forEach((row, i) => {
-        console.log(row.toString());
-      });
-    }
+    if (this.debug) quarterArray.forEach((row, i) => {console.log(row.toString());});
 
     return quarterArray;
   }
 
-
+  // Takes in a quarterArray and turns it into a full 2d Array
   quarterToFull(quarterArray){
     var radius = quarterArray[0].length;
     var size = radius*2 - 1;
@@ -168,15 +169,39 @@ class Heatmap {
       }
     }
 
-    if (this.debug) {
-      fullArray.forEach((row, i) => {
-        console.log(row.toString());
-      });
-    }
+    if (this.debug) fullArray.forEach((row, i) => {console.log(row.toString());});
 
     return fullArray;
   }
 
+
+
+  heat(heat, x, y){
+    var quarter = this.quarterArray(heat);
+    var radius = quarter[0].length;
+
+    var heatVal;
+    var left, right, top, bottom;
+
+    for (var rowFromCenter = (radius-1); rowFromCenter+1 > 0; rowFromCenter--) {
+      for (var columnFromCenter = (radius-1)-rowFromCenter; columnFromCenter+1 > 0; columnFromCenter--) {
+        heatVal = quarter[rowFromCenter][columnFromCenter];
+        left = x - columnFromCenter;
+        right = x + columnFromCenter;
+        top = y - rowFromCenter;
+        bottom = y + rowFromCenter;
+
+        this.heatmap[top][right] = heatVal;
+        if(columnFromCenter != 0) this.heatmap[top][left] = heatVal;
+
+        if(rowFromCenter != 0){
+          this.heatmap[bottom][right] = heatVal;
+          if(columnFromCenter != 0) this.heatmap[bottom][left] = heatVal;
+        }
+      }
+    }
+
+  }
 
 
   // Add Heat ?(pattern, heat, fallOff)

@@ -3,5 +3,6 @@ const Heatmap = require('./HeatmapMatrix');
 
 var hm = new Heatmap(10,10,2);
 
-hm.debug = true;
-hm.quarterToFull(hm.addHeat(10,5,5));
+hm.debug = false;
+hm.heat(5,2,3);
+hm.display();
