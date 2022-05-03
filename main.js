@@ -9,7 +9,7 @@ var heatmap = new Heatmap(width,height,rollOff);
 heatmap.mergeType = heatmap.add;
 
 for (var i = 0; i < 20; i++) {
-  var heat = Math.floor(Math.random() * 20)+3
+  var heat = Math.floor(Math.random() * 40)+1
   var xPos = Math.floor(Math.random() * (width+1));
   var yPos = Math.floor(Math.random() * (height+1))
   heatmap.heat( heat, xPos, yPos);
