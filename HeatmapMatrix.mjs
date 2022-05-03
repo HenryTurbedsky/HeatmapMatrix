@@ -191,12 +191,14 @@ class Heatmap {
         top = y - rowFromCenter;
         bottom = y + rowFromCenter;
 
-        this.heatmap[top][right] = heatVal;
-        if(columnFromCenter != 0) this.heatmap[top][left] = heatVal;
+        if(top >= 0){
+          if(right < this.width) this.heatmap[top][right] = heatVal;
+          if(columnFromCenter != 0 && left >= 0) this.heatmap[top][left] = heatVal;
+        }
 
-        if(rowFromCenter != 0){
-          this.heatmap[bottom][right] = heatVal;
-          if(columnFromCenter != 0) this.heatmap[bottom][left] = heatVal;
+        if(rowFromCenter != 0 && bottom < this.height){
+          if(right < this.width) this.heatmap[bottom][right] = heatVal;
+          if(columnFromCenter != 0 && left >= 0) this.heatmap[bottom][left] = heatVal;
         }
       }
     }
@@ -215,7 +217,7 @@ class Heatmap {
 
   display(){
     this.heatmap.forEach((row, i) => {
-      console.log(row.join(""));
+      console.log(row.join(" "));
     });
   }
 
