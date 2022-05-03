@@ -1,8 +1,12 @@
 const Heatmap = require('./HeatmapMatrix');
 
-var hm = new Heatmap(9,9,2);
+var heatmap = new Heatmap(10,10,1);
 
-hm.debug = false;
-hm.heat(5,4,4);
-hm.display();
-this.heatmap
+heatmap.debug = false;
+
+heatmap.mergeType = heatmap.add;
+
+heatmap.heat(7, 3, 12);
+heatmap.heat(4, 4, 3);
+
+heatmap.display();

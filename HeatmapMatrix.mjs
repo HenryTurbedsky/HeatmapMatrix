@@ -21,25 +21,8 @@ TODO: fallOff patters?
   ?could be done by checking if fallOff is a int or float.
   This would probably just be defencive code.
   To come up with paters I should think of diffrent uses ?pathfind ?lookUp Speed
-  Agacent: fallOff 2
-    10
-    0  0  2  4  2  0  0
-    0  2  4  6  4  2  0
-    2  4  6  8  6  4  0
-    4  6  8  10 8  6  4
-    2  4  6  8  6  4  0
-    0  2  4  6  4  2  0
-    0  0  2  4  2  0  0
 
-    6
-    0  0  0  2  0  0  0
-    0  0  2  4  2  0  0
-    0  2  4  6  4  2  0
-    2  4  6  8  6  4  2
-    0  2  4  6  4  2  0
-    0  0  2  4  2  0  0
-    0  0  0  2  0  0  0
-
+  Adjacent: fallOff 2
     5
     0  0  1  0  0
     0  1  3  1  0
@@ -47,7 +30,6 @@ TODO: fallOff patters?
     0  1  3  1  0
     0  0  1  0  0
 
-    set =>
 
 TODO: Void Spots (Spots that dont have a value)
   use -1 ?
@@ -97,6 +79,9 @@ class Heatmap {
   static fallOff; // Ratio? Faster fallOff
   static peeks; //Hottest points on the heat map;
 
+  static mergeType;
+  static patterType;
+
   static debug;
 
   constructor(width,height,fallOff){
@@ -111,18 +96,26 @@ class Heatmap {
       this.heatmap[i] = new Array(width).fill(0);
     }
 
+    this.set = this.set.bind(this);
+    this.add = this.add.bind(this);
+    this.apply = this.apply.bind(this);
+    this.mergeType = this.apply;
+
+    this.adjacent = this.adjacent.bind(this);
+    this.patterType = this.adjacent;
+
     this.debug = false;
   }
 
 
   //Sets a single point without any heat fallOff
-  setPoint(val, x, y){
-    this.heatmap[y][x] = val;
+  set(heat, x, y){
+    this.heatmap[y][x] = heat;
   }
 
   //Adds to a single point without any heat fallOff
-  addHeat(heat,x,y){
-    this.heatmap[y][x] += val;
+  add(heat,x,y){
+    this.heatmap[y][x] += heat;
   }
 
   // Sets the heat
@@ -132,7 +125,7 @@ class Heatmap {
 
 
   // Takes in a value and crates a quarterArray for the rollOff.
-  quarterArray(heat){
+  adjacent(heat){
     var quarterArray = [];
     var fallOffSteps = Math.ceil(heat/this.fallOff);
 
@@ -177,7 +170,7 @@ class Heatmap {
 
 
   heat(heat, x, y){
-    var quarter = this.quarterArray(heat);
+    var quarter = this.patterType(heat);
     var radius = quarter[0].length;
 
     var heatVal;
@@ -191,15 +184,27 @@ class Heatmap {
         top = y - rowFromCenter;
         bottom = y + rowFromCenter;
 
-        if(top >= 0){
-          if(right < this.width) this.heatmap[top][right] = heatVal;
-          if(columnFromCenter != 0 && left >= 0) this.heatmap[top][left] = heatVal;
+
+
+        if(top >= 0 && top < this.height){
+          if(right >= 0 && right < this.width) this.mergeType(heatVal,right,top);
+          if(columnFromCenter != 0 && left >= 0 && left < this.width) this.mergeType(heatVal,left,top);
         }
 
-        if(rowFromCenter != 0 && bottom < this.height){
-          if(right < this.width) this.heatmap[bottom][right] = heatVal;
-          if(columnFromCenter != 0 && left >= 0) this.heatmap[bottom][left] = heatVal;
+        if(rowFromCenter != 0 && bottom >= 0 && bottom < this.height){
+          if(right < this.width) this.mergeType(heatVal,right,bottom);
+          if(columnFromCenter != 0 && left >= 0 && left < this.width) this.mergeType(heatVal,left,bottom);
         }
+
+        // if(top >= 0){
+        //   if(right < this.width) this.heatmap[top][right] = heatVal;
+        //   if(columnFromCenter != 0 && left >= 0) this.heatmap[top][left] = heatVal;
+        // }
+        //
+        // if(rowFromCenter != 0 && bottom < this.height){
+        //   if(right < this.width) this.heatmap[bottom][right] = heatVal;
+        //   if(columnFromCenter != 0 && left >= 0) this.heatmap[bottom][left] = heatVal;
+        // }
       }
     }
 
