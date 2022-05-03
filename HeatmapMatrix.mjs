@@ -66,7 +66,8 @@ TODO: Ideas
   Bitboard layers for value. example 10 bitboards since value will max 10
 */
 
-class Heatmap {
+//class Heatmap { //this is for Node.js
+export class Heatmap {
 
   static heatmap; //2d Array
   static height; //Y array of arrays
@@ -112,17 +113,14 @@ class Heatmap {
   set(heat, x, y){
     this.heatmap[y][x] = heat;
   }
-
   //Adds to a single point without any heat fallOff
   add(heat,x,y){
     this.heatmap[y][x] += heat;
   }
-
   // Sets the heat
   apply(heat,x,y){
     if(this.heatmap[y][x]<heat) this.heatmap[y][x] = heat;
   }
-
 
   // Takes in a value and crates a quarterArray for the rollOff.
   adjacent(heat){
@@ -140,6 +138,7 @@ class Heatmap {
 
     return quarterArray;
   }
+
 
   // Takes in a quarterArray and turns it into a full 2d Array
   quarterToFull(quarterArray){
@@ -230,4 +229,4 @@ class Heatmap {
 
 
 
-module.exports = Heatmap;
+//module.exports = Heatmap; //This is for Node.js
