@@ -67,7 +67,7 @@ TODO: Ideas
 */
 
 //class Heatmap { //this is for Node.js
-export class Heatmap {
+class Heatmap {
 
   static heatmap; //2d Array
   static height; //Y array of arrays

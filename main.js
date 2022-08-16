@@ -1,5 +1,5 @@
 //const Heatmap = require('./HeatmapMatrix'); // For Node.js
-import { Heatmap } from './HeatmapMatrix.mjs';
+//import { Heatmap } from './HeatmapMatrix.js';
 
 var width = 100, height = 100;
 var rollOff = 1;
