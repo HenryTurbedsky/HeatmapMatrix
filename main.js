@@ -6,7 +6,8 @@ var rollOff = 1;
 
 var heatmap = new Heatmap(width,height,rollOff);
 
-heatmap.mergeType = heatmap.add;
+heatmap.mergeType = Heatmap.add;
+heatmap.patterType = Heatmap.adjacent;
 
 for (var i = 0; i < 20; i++) {
   var heat = Math.floor(Math.random() * 40)+1

@@ -97,33 +97,28 @@ class Heatmap {
       this.heatmap[i] = new Array(width).fill(0);
     }
 
-    this.set = this.set.bind(this);
-    this.add = this.add.bind(this);
-    this.apply = this.apply.bind(this);
-    this.mergeType = this.apply;
-
-    this.adjacent = this.adjacent.bind(this);
-    this.patterType = this.adjacent;
+    this.mergeType = Heatmap.apply;
+    this.patterType = Heatmap.adjacent;
 
     this.debug = false;
   }
 
 
   //Sets a single point without any heat fallOff
-  set(heat, x, y){
+  static set(heat, x, y){
     this.heatmap[y][x] = heat;
   }
   //Adds to a single point without any heat fallOff
-  add(heat,x,y){
+  static add(heat,x,y){
     this.heatmap[y][x] += heat;
   }
   // Sets the heat
-  apply(heat,x,y){
+  static apply(heat,x,y){
     if(this.heatmap[y][x]<heat) this.heatmap[y][x] = heat;
   }
 
   // Takes in a value and crates a quarterArray for the rollOff.
-  adjacent(heat){
+  static adjacent(heat){
     var quarterArray = [];
     var fallOffSteps = Math.ceil(heat/this.fallOff);
 
